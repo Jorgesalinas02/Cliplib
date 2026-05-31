@@ -219,6 +219,7 @@ export default function VideoCard({
   const [copied, setCopied] = useState(false)
   const [localCategory, setLocalCategory] = useState<string | null>(initialVideo.category)
   const [localSaved, setLocalSaved] = useState(initialVideo.saved)
+  const [localScripted, setLocalScripted] = useState(initialVideo.scripted)
   const [localTitle, setLocalTitle] = useState(initialVideo.title ?? '')
   const [editingTitle, setEditingTitle] = useState(false)
   const [titleDraft, setTitleDraft] = useState(initialVideo.title ?? '')
@@ -228,7 +229,8 @@ export default function VideoCard({
   useEffect(() => {
     setLocalCategory(video.category)
     setLocalSaved(video.saved)
-  }, [video.category, video.saved])
+    setLocalScripted(video.scripted)
+  }, [video.category, video.saved, video.scripted])
 
   useEffect(() => {
     if (editingTitle) titleInputRef.current?.focus()
@@ -255,6 +257,17 @@ export default function VideoCard({
   function handleTitleKeyDown(e: React.KeyboardEvent) {
     if (e.key === 'Enter') saveTitle()
     if (e.key === 'Escape') { setEditingTitle(false); setTitleDraft(localTitle) }
+  }
+
+  async function handleToggleScripted() {
+    const next = !localScripted
+    setLocalScripted(next)
+    try {
+      await updateVideo(video.id, { scripted: next })
+      onUpdate()
+    } catch {
+      setLocalScripted(localScripted)
+    }
   }
 
   async function handleToggleSaved() {
@@ -312,6 +325,22 @@ export default function VideoCard({
       {/* Colored header + bookmark button */}
       <div className="relative">
         <CardHeader platform={video.platform} status={video.status} />
+        {/* Guión button — top left */}
+        <button
+          onClick={handleToggleScripted}
+          className={`absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1.5 rounded-badge text-xs font-semibold transition-all shadow-md
+            ${localScripted
+              ? 'bg-brand-purple text-brand-dark'
+              : 'bg-white text-brand-dark hover:bg-brand-purple'
+            }`}
+        >
+          <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+          </svg>
+          {localScripted ? 'Guión ✓' : 'Guión'}
+        </button>
+
+        {/* Grabar button — top right */}
         <button
           onClick={handleToggleSaved}
           className={`absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1.5 rounded-badge text-xs font-semibold transition-all shadow-md

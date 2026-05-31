@@ -63,6 +63,7 @@ async def list_videos(
     q: Optional[str] = Query(default=None),
     category: Optional[str] = Query(default=None),
     saved: Optional[bool] = Query(default=None),
+    scripted: Optional[bool] = Query(default=None),
     pool=Depends(get_pool),
 ):
     offset = (page - 1) * limit
@@ -95,6 +96,11 @@ async def list_videos(
     if saved is not None:
         conditions.append(f"saved = ${idx}")
         params.append(saved)
+        idx += 1
+
+    if scripted is not None:
+        conditions.append(f"scripted = ${idx}")
+        params.append(scripted)
         idx += 1
 
     where_clause = ("WHERE " + " AND ".join(conditions)) if conditions else ""
@@ -174,6 +180,11 @@ async def update_video(video_id: str, payload: VideoUpdate, pool=Depends(get_poo
         if payload.saved is not None:
             updates.append(f"saved = ${idx}")
             params.append(payload.saved)
+            idx += 1
+
+        if payload.scripted is not None:
+            updates.append(f"scripted = ${idx}")
+            params.append(payload.scripted)
             idx += 1
 
         if not updates:

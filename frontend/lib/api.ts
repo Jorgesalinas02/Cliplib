@@ -26,6 +26,7 @@ export interface Video {
   error_message: string | null
   category: string | null
   saved: boolean
+  scripted: boolean
   created_at: string
   transcribed_at: string | null
 }
@@ -76,6 +77,7 @@ export function getVideos(params: {
   q?: string
   category?: string
   saved?: boolean
+  scripted?: boolean
 }): Promise<PaginatedVideos> {
   const qs = new URLSearchParams()
   if (params.page) qs.set('page', String(params.page))
@@ -85,6 +87,7 @@ export function getVideos(params: {
   if (params.q) qs.set('q', params.q)
   if (params.category) qs.set('category', params.category)
   if (params.saved !== undefined) qs.set('saved', String(params.saved))
+  if (params.scripted !== undefined) qs.set('scripted', String(params.scripted))
   const query = qs.toString()
   return request<PaginatedVideos>(`/videos${query ? `?${query}` : ''}`)
 }
@@ -93,7 +96,7 @@ export function getVideo(id: string): Promise<Video> {
   return request<Video>(`/videos/${id}`)
 }
 
-export function updateVideo(id: string, data: { title?: string; tags?: string[]; category?: string | null; saved?: boolean }): Promise<Video> {
+export function updateVideo(id: string, data: { title?: string; tags?: string[]; category?: string | null; saved?: boolean; scripted?: boolean }): Promise<Video> {
   return request<Video>(`/videos/${id}`, {
     method: 'PATCH',
     body: JSON.stringify(data),
