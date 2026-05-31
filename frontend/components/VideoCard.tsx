@@ -219,12 +219,43 @@ export default function VideoCard({
   const [copied, setCopied] = useState(false)
   const [localCategory, setLocalCategory] = useState<string | null>(initialVideo.category)
   const [localSaved, setLocalSaved] = useState(initialVideo.saved)
+  const [localTitle, setLocalTitle] = useState(initialVideo.title ?? '')
+  const [editingTitle, setEditingTitle] = useState(false)
+  const [titleDraft, setTitleDraft] = useState(initialVideo.title ?? '')
+  const titleInputRef = useRef<HTMLInputElement>(null)
 
   // Keep in sync if polled data updates
   useEffect(() => {
     setLocalCategory(video.category)
     setLocalSaved(video.saved)
   }, [video.category, video.saved])
+
+  useEffect(() => {
+    if (editingTitle) titleInputRef.current?.focus()
+  }, [editingTitle])
+
+  function startEditTitle() {
+    setTitleDraft(localTitle)
+    setEditingTitle(true)
+  }
+
+  async function saveTitle() {
+    setEditingTitle(false)
+    const trimmed = titleDraft.trim()
+    if (trimmed === localTitle) return
+    setLocalTitle(trimmed)
+    try {
+      await updateVideo(video.id, { title: trimmed })
+      onUpdate()
+    } catch {
+      setLocalTitle(localTitle) // revert
+    }
+  }
+
+  function handleTitleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Enter') saveTitle()
+    if (e.key === 'Escape') { setEditingTitle(false); setTitleDraft(localTitle) }
+  }
 
   async function handleToggleSaved() {
     const next = !localSaved
@@ -299,13 +330,44 @@ export default function VideoCard({
       {/* Body */}
       <div className="p-4 flex flex-col gap-3 flex-1">
 
-        {/* Title + URL + date */}
-        <div>
-          {video.title && (
-            <p className="text-brand-dark font-bold text-base leading-snug mb-1 line-clamp-1">
-              {video.title}
-            </p>
+        {/* Title editable + URL + date */}
+        <div className="flex flex-col gap-1">
+
+          {/* Inline title editor */}
+          {editingTitle ? (
+            <input
+              ref={titleInputRef}
+              value={titleDraft}
+              onChange={(e) => setTitleDraft(e.target.value)}
+              onBlur={saveTitle}
+              onKeyDown={handleTitleKeyDown}
+              placeholder="Escribe un título..."
+              maxLength={120}
+              className="w-full text-brand-dark font-bold text-sm leading-snug bg-brand-bg border border-brand-blue/40 rounded-card px-2 py-1 outline-none focus:border-brand-blue transition-colors"
+            />
+          ) : (
+            <button
+              onClick={startEditTitle}
+              className="text-left group/title w-full"
+              title="Editar título"
+            >
+              {localTitle ? (
+                <span className="flex items-center gap-1.5">
+                  <span className="text-brand-dark font-bold text-sm leading-snug line-clamp-1">
+                    {localTitle}
+                  </span>
+                  <svg className="w-3 h-3 text-gray-300 group-hover/title:text-gray-500 shrink-0 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                  </svg>
+                </span>
+              ) : (
+                <span className="text-gray-300 text-xs italic group-hover/title:text-gray-400 transition-colors">
+                  + Agregar título...
+                </span>
+              )}
+            </button>
           )}
+
           <div className="flex items-center justify-between gap-2">
             <a
               href={video.url}

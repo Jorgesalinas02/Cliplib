@@ -53,7 +53,11 @@
       "Bash(curl -s -o /dev/null -w 'CORS: %{http_code}\\\\n' -X OPTIONS https://cliplib.onrender.com/videos -H 'Origin: https://cliplib.vercel.app' -H 'Access-Control-Request-Method: POST')",
       "Bash(curl -s \"https://cliplib.onrender.com/videos?limit=3\")",
       "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(f'videos en BD: {d[\\\\\"total\\\\\"]}'\\)\")",
-      "Bash(git reset *)"
+      "Bash(git reset *)",
+      "Bash(curl -s \"https://cliplib.onrender.com/videos?limit=5&saved=false\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(f'✓ Backend OK — {d[\\\\\"total\\\\\"]} videos en biblioteca'\\)\")",
+      "Bash(curl -s \"https://cliplib.onrender.com/videos?limit=5&saved=true\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(f'✓ Grabados OK — {d[\\\\\"total\\\\\"]} videos grabados'\\)\")"
     ]
   }
 }
