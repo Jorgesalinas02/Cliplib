@@ -9,6 +9,7 @@ import VideoCard from '@/components/VideoCard'
 import FilterChips from '@/components/FilterChips'
 import TranscriptModal from '@/components/TranscriptModal'
 import { CATEGORY_COLORS } from '@/components/CategoryFilter'
+import Nav from '@/components/Nav'
 
 // ── Stat card ────────────────────────────────────────────────
 function StatCard({ value, label }: { value: number | string; label: string }) {
@@ -116,14 +117,15 @@ function HomeContent() {
     if (saveUrl) setPrefillUrl(saveUrl)
   }, [searchParams])
 
-  // Load all videos for accurate stats (unfiltered)
-  const { videos: allVideos, isLoading: allLoading, mutate: mutateAll } = useVideos({})
+  // Load all non-saved videos for accurate stats
+  const { videos: allVideos, isLoading: allLoading, mutate: mutateAll } = useVideos({ saved: false })
 
-  // Filtered view
+  // Filtered view — only non-saved videos in the main dashboard
   const { videos, isLoading, mutate } = useVideos({
     tags: activeTags,
     q: searchQuery,
     category: activeCategory,
+    saved: false,
   })
 
   function handleMutate() {
@@ -149,10 +151,13 @@ function HomeContent() {
     <main className="min-h-screen bg-brand-bg">
       <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col gap-6">
 
-        {/* Logo */}
-        <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-bold text-brand-dark tracking-tight">Cliplib</h1>
-          <span className="w-2 h-2 rounded-full bg-brand-olive" />
+        {/* Logo + Nav */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-brand-dark tracking-tight">Cliplib</h1>
+            <span className="w-2 h-2 rounded-full bg-brand-olive" />
+          </div>
+          <Nav active="biblioteca" />
         </div>
 
         {/* Add video bar */}

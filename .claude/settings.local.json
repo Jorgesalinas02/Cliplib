@@ -42,7 +42,18 @@
       "Bash(git init *)",
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
-      "Bash(rm -f /Users/jorgesalinas/Desktop/Proyectos/Cliplib/.git/index.lock)"
+      "Bash(rm -f /Users/jorgesalinas/Desktop/Proyectos/Cliplib/.git/index.lock)",
+      "Bash(git remote *)",
+      "Bash(git push *)",
+      "Bash(curl -s https://cliplib.onrender.com/health)",
+      "Bash(curl -s \"https://cliplib.onrender.com/videos?limit=5\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(f'total videos: {d[\\\\\"total\\\\\"]}'\\)\")",
+      "Bash(curl -s -o /dev/null -w 'CORS status: %{http_code}\\\\n' -X OPTIONS https://cliplib.onrender.com/videos -H 'Origin: https://cliplib.vercel.app' -H 'Access-Control-Request-Method: POST')",
+      "Bash(curl -sv -X OPTIONS https://cliplib.onrender.com/videos -H 'Origin: https://cliplib.vercel.app' -H 'Access-Control-Request-Method: POST')",
+      "Bash(curl -s -o /dev/null -w 'CORS: %{http_code}\\\\n' -X OPTIONS https://cliplib.onrender.com/videos -H 'Origin: https://cliplib.vercel.app' -H 'Access-Control-Request-Method: POST')",
+      "Bash(curl -s \"https://cliplib.onrender.com/videos?limit=3\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(f'videos en BD: {d[\\\\\"total\\\\\"]}'\\)\")",
+      "Bash(git reset *)"
     ]
   }
 }

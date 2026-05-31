@@ -218,11 +218,24 @@ export default function VideoCard({
   const [retrying, setRetrying] = useState(false)
   const [copied, setCopied] = useState(false)
   const [localCategory, setLocalCategory] = useState<string | null>(initialVideo.category)
+  const [localSaved, setLocalSaved] = useState(initialVideo.saved)
 
   // Keep in sync if polled data updates
   useEffect(() => {
     setLocalCategory(video.category)
-  }, [video.category])
+    setLocalSaved(video.saved)
+  }, [video.category, video.saved])
+
+  async function handleToggleSaved() {
+    const next = !localSaved
+    setLocalSaved(next)
+    try {
+      await updateVideo(video.id, { saved: next })
+      onUpdate()
+    } catch {
+      setLocalSaved(localSaved) // revert
+    }
+  }
 
   async function handleCategoryChange(cat: string | null) {
     setLocalCategory(cat)
@@ -265,8 +278,23 @@ export default function VideoCard({
   return (
     <div className="group bg-white border border-black/8 rounded-card overflow-hidden hover:shadow-md hover:border-black/12 transition-all flex flex-col">
 
-      {/* Colored header */}
-      <CardHeader platform={video.platform} status={video.status} />
+      {/* Colored header + bookmark button */}
+      <div className="relative">
+        <CardHeader platform={video.platform} status={video.status} />
+        <button
+          onClick={handleToggleSaved}
+          className={`absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1.5 rounded-badge text-xs font-semibold transition-all shadow-md
+            ${localSaved
+              ? 'bg-brand-yellow text-brand-dark'
+              : 'bg-white text-brand-dark hover:bg-brand-yellow'
+            }`}
+        >
+          <svg className="w-3.5 h-3.5 shrink-0" fill={localSaved ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+          </svg>
+          {localSaved ? 'Grabado' : 'Grabar'}
+        </button>
+      </div>
 
       {/* Body */}
       <div className="p-4 flex flex-col gap-3 flex-1">

@@ -16,6 +16,7 @@ class VideoUpdate(BaseModel):
     title: str | None = None
     tags: list[str] | None = None
     category: str | None = None
+    saved: bool | None = None
 
 
 class VideoResponse(BaseModel):
@@ -30,6 +31,7 @@ class VideoResponse(BaseModel):
     duration_seconds: float | None
     error_message: str | None
     category: str | None
+    saved: bool
     created_at: datetime
     transcribed_at: datetime | None
 
