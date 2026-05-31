@@ -1,0 +1,23 @@
+# Env files — NEVER commit credentials
+.env
+.env.local
+.env.production
+backend/.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Node
+node_modules/
+frontend/.next/
+frontend/out/
+
+# OS
+.DS_Store
+*.log
+/tmp/
