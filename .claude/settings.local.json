@@ -57,7 +57,8 @@
       "Bash(curl -s \"https://cliplib.onrender.com/videos?limit=5&saved=false\")",
       "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(f'✓ Backend OK — {d[\\\\\"total\\\\\"]} videos en biblioteca'\\)\")",
       "Bash(curl -s \"https://cliplib.onrender.com/videos?limit=5&saved=true\")",
-      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(f'✓ Grabados OK — {d[\\\\\"total\\\\\"]} videos grabados'\\)\")"
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(f'✓ Grabados OK — {d[\\\\\"total\\\\\"]} videos grabados'\\)\")",
+      "Bash(git commit -m 'Fix title wrapping to 2 lines on video cards *)"
     ]
   }
 }

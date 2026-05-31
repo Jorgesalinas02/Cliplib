@@ -353,7 +353,7 @@ export default function VideoCard({
             >
               {localTitle ? (
                 <span className="flex items-center gap-1.5">
-                  <span className="text-brand-dark font-bold text-sm leading-snug line-clamp-1">
+                  <span className="text-brand-dark font-bold text-sm leading-snug line-clamp-2">
                     {localTitle}
                   </span>
                   <svg className="w-3 h-3 text-gray-300 group-hover/title:text-gray-500 shrink-0 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
