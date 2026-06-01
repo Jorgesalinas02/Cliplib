@@ -22,10 +22,17 @@ def get_client() -> Groq:
     return _client
 
 
+FORMATO_RAPIDO_THRESHOLD = 100  # words
+
 async def auto_categorize(transcript: str) -> str | None:
     """Use Groq to pick a category for the given transcript. Returns one of CATEGORIES or None."""
-    if not transcript or len(transcript.strip()) < 30:
+    if not transcript or len(transcript.strip()) < 10:
         return None
+
+    # Short videos → Formato Rápido automatically (no API call needed)
+    word_count = len(transcript.split())
+    if word_count < FORMATO_RAPIDO_THRESHOLD:
+        return "Formato Rápido"
 
     categories_list = "\n".join(f"- {c}" for c in CATEGORIES)
     prompt = (
