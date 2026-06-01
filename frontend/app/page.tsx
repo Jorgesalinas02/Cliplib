@@ -10,6 +10,7 @@ import FilterChips from '@/components/FilterChips'
 import TranscriptModal from '@/components/TranscriptModal'
 import { CATEGORY_COLORS } from '@/components/CategoryFilter'
 import Nav from '@/components/Nav'
+import { useBackendStatus } from '@/hooks/useBackendStatus'
 
 // ── Stat card ────────────────────────────────────────────────
 function StatCard({ value, label }: { value: number | string; label: string }) {
@@ -105,6 +106,7 @@ function CategorySearchBar({
 // ── Main page ────────────────────────────────────────────────
 function HomeContent() {
   const searchParams = useSearchParams()
+  const { status: backendStatus, elapsed } = useBackendStatus()
   const [activeTags, setActiveTags] = useState<string[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [activeCategory, setActiveCategory] = useState<string | undefined>(undefined)
@@ -150,6 +152,19 @@ function HomeContent() {
   return (
     <main className="min-h-screen bg-brand-bg">
       <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col gap-6">
+
+        {/* Warming up banner */}
+        {backendStatus === 'warming' && (
+          <div className="flex items-center gap-3 bg-brand-yellow/20 border border-brand-yellow/40 rounded-card px-4 py-3 text-sm text-brand-dark">
+            <div className="w-4 h-4 border-2 border-brand-dark/30 border-t-brand-dark rounded-full animate-spin shrink-0" />
+            <div>
+              <span className="font-medium">Despertando el servidor...</span>
+              <span className="text-gray-500 ml-2">
+                El servidor estaba inactivo, tardará unos segundos ({elapsed}s)
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* Logo + Nav */}
         <div className="flex items-center justify-between">
