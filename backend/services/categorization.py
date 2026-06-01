@@ -26,7 +26,7 @@ FORMATO_RAPIDO_THRESHOLD = 100  # words
 
 async def auto_categorize(transcript: str) -> str | None:
     """Use Groq to pick a category for the given transcript. Returns one of CATEGORIES or None."""
-    if not transcript or len(transcript.strip()) < 10:
+    if not transcript or len(transcript.strip()) < 5:
         return None
 
     # Short videos → Formato Rápido automatically (no API call needed)

@@ -80,13 +80,13 @@ async def transcribe_video(video_id: str, url: str, pool):
 
     except Exception as e:
         error_msg = str(e)
-        # Videos with no speech (music-only, silent) → done with placeholder
+        # Videos with no speech (music-only, silent) → done with placeholder + Formato Rápido
         if "no audio track" in error_msg.lower() or "no speech" in error_msg.lower():
             async with pool.acquire() as db:
                 await db.execute(
                     """
                     UPDATE videos
-                    SET status='done', transcript=$1, transcribed_at=NOW()
+                    SET status='done', transcript=$1, transcribed_at=NOW(), category='Formato Rápido'
                     WHERE id=$2
                     """,
                     "No hay texto para transcribir.",
