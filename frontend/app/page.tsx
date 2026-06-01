@@ -36,11 +36,11 @@ function CategorySearchBar({
   const [searchOpen, setSearchOpen] = useState(false)
 
   return (
-    <div className="flex items-center gap-2 flex-wrap">
+    <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap">
       {/* "Todos" pill */}
       <button
         onClick={() => onCategoryChange(undefined)}
-        className={`px-4 py-1.5 rounded-badge text-sm font-medium border transition-colors ${
+        className={`shrink-0 px-4 py-1.5 rounded-badge text-sm font-medium border transition-colors ${
           !activeCategory
             ? 'border-brand-dark text-brand-dark bg-white font-semibold'
             : 'border-black/15 text-gray-500 bg-white hover:border-black/30 hover:text-brand-dark'
@@ -57,7 +57,7 @@ function CategorySearchBar({
           <button
             key={cat}
             onClick={() => onCategoryChange(isActive ? undefined : cat)}
-            className={`px-4 py-1.5 rounded-badge text-sm font-medium border transition-colors ${
+            className={`shrink-0 px-4 py-1.5 rounded-badge text-sm font-medium border transition-colors ${
               isActive
                 ? `border-brand-dark text-brand-dark bg-white font-semibold`
                 : 'border-black/15 text-gray-500 bg-white hover:border-black/30 hover:text-brand-dark'
@@ -163,9 +163,9 @@ function HomeContent() {
         {/* Add video bar */}
         <AddVideoBar onSuccess={handleMutate} prefillUrl={prefillUrl} />
 
-        {/* Stats row */}
+        {/* Stats row — 2x2 on mobile, 4 cols on desktop */}
         {!allLoading && (
-          <div className="flex gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <StatCard value={allVideos.length} label="videos guardados" />
             <StatCard value={doneCount}        label="transcritos" />
             <StatCard value={processingCount}  label="procesando" />

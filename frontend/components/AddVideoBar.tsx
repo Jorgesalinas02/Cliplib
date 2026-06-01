@@ -64,13 +64,13 @@ export default function AddVideoBar({ onSuccess, prefillUrl }: AddVideoBarProps)
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             placeholder="Pega una URL de TikTok o Instagram..."
-            className="flex-1 bg-white border border-black/10 rounded-card px-4 py-2.5 text-brand-dark placeholder-gray-400 focus:outline-none focus:border-brand-blue/60 transition-colors text-sm"
+            className="flex-1 min-w-0 bg-white border border-black/10 rounded-card px-4 py-2.5 text-brand-dark placeholder-gray-400 focus:outline-none focus:border-brand-blue/60 transition-colors text-sm"
             disabled={loading}
           />
           <button
             type="button"
             onClick={() => setShowTitle((v) => !v)}
-            className="px-3 py-2.5 bg-white border border-black/10 rounded-card text-gray-400 hover:text-brand-dark hover:border-black/20 transition-colors text-sm"
+            className="shrink-0 px-3 py-2.5 bg-white border border-black/10 rounded-card text-gray-400 hover:text-brand-dark hover:border-black/20 transition-colors text-sm"
             title="Agregar título"
           >
             +T
@@ -78,7 +78,7 @@ export default function AddVideoBar({ onSuccess, prefillUrl }: AddVideoBarProps)
           <button
             type="submit"
             disabled={loading}
-            className="px-5 py-2.5 bg-brand-dark hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed rounded-badge text-white font-semibold text-sm transition-colors flex items-center gap-2 border border-gray-700"
+            className="shrink-0 px-4 sm:px-5 py-2.5 bg-brand-dark hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed rounded-badge text-white font-semibold text-sm transition-colors flex items-center gap-2 border border-gray-700"
           >
             {loading ? (
               <>

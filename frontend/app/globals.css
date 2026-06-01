@@ -9,6 +9,14 @@
   }
 }
 
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 @keyframes indeterminate {
   0% { transform: translateX(-100%); }
   50% { transform: translateX(100%); }

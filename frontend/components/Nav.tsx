@@ -33,14 +33,18 @@ export default function Nav({ active }: NavProps) {
           <Link
             key={tab.id}
             href={tab.href}
-            className={`flex items-center gap-1.5 px-4 py-1.5 rounded-badge text-sm font-medium transition-colors ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-badge text-xs sm:text-sm font-medium transition-colors ${
               isActive
                 ? 'bg-brand-dark text-white'
                 : 'text-gray-500 hover:text-brand-dark'
             }`}
           >
             {tab.icon && tab.icon(isActive)}
-            {tab.label}
+            {/* On mobile show short labels */}
+            <span className="hidden sm:inline">{tab.label}</span>
+            <span className="sm:hidden">
+              {tab.id === 'biblioteca' ? 'Inicio' : tab.id === 'grabados' ? 'Grabados' : 'Guión'}
+            </span>
           </Link>
         )
       })}
