@@ -79,12 +79,26 @@ async def transcribe_video(video_id: str, url: str, pool):
             )
 
     except Exception as e:
-        async with pool.acquire() as db:
-            await db.execute(
-                "UPDATE videos SET status='failed', error_message=$1 WHERE id=$2",
-                str(e),
-                video_id,
-            )
+        error_msg = str(e)
+        # Videos with no speech (music-only, silent) → done with placeholder
+        if "no audio track" in error_msg.lower() or "no speech" in error_msg.lower():
+            async with pool.acquire() as db:
+                await db.execute(
+                    """
+                    UPDATE videos
+                    SET status='done', transcript=$1, transcribed_at=NOW()
+                    WHERE id=$2
+                    """,
+                    "No hay texto para transcribir.",
+                    video_id,
+                )
+        else:
+            async with pool.acquire() as db:
+                await db.execute(
+                    "UPDATE videos SET status='failed', error_message=$1 WHERE id=$2",
+                    error_msg,
+                    video_id,
+                )
     finally:
         for f in glob.glob(f"{tmp_base}*"):
             try:
