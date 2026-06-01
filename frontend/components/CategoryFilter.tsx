@@ -9,6 +9,7 @@ export const CATEGORY_COLORS: Record<string, { bg: string; text: string; activeB
   'Tecnología':          { bg: 'bg-brand-purple/20', text: 'text-purple-700', activeBg: 'bg-brand-purple', activeText: 'text-brand-dark' },
   'Crecimiento personal':{ bg: 'bg-brand-olive/20',  text: 'text-green-700',  activeBg: 'bg-brand-olive',  activeText: 'text-brand-dark' },
   'Negocios':            { bg: 'bg-brand-yellow/20', text: 'text-yellow-700', activeBg: 'bg-brand-yellow', activeText: 'text-brand-dark' },
+  'Formato Rápido':      { bg: 'bg-orange-100',      text: 'text-orange-700', activeBg: 'bg-orange-400',   activeText: 'text-white' },
 }
 
 interface CategoryFilterProps {

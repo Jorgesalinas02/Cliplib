@@ -10,6 +10,7 @@ CATEGORIES = [
     "Tecnología",
     "Crecimiento personal",
     "Negocios",
+    "Formato Rápido",
 ]
 
 _client: Groq | None = None
