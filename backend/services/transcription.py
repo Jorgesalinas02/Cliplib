@@ -25,13 +25,20 @@ async def transcribe_video(video_id: str, url: str, pool):
 
     try:
         # Download audio in native format — no ffmpeg needed
-        # Groq accepts: mp3, mp4, m4a, webm, wav, mpeg, mpga
+        # Download audio-only stream (no ffmpeg needed)
+        # acodec!=none ensures there's audio, vcodec=none prefers audio-only
         ydl_opts = {
-            "format": "bestaudio[ext=m4a]/bestaudio[ext=mp3]/bestaudio/best",
+            "format": (
+                "bestaudio[acodec!=none][vcodec=none]"
+                "/bestaudio[acodec!=none]"
+                "/best[acodec!=none][height<=480]"
+                "/best"
+            ),
             "outtmpl": f"{tmp_base}.%(ext)s",
             "quiet": True,
             "no_warnings": True,
-            "socket_timeout": 30,
+            "socket_timeout": 60,
+            "retries": 3,
         }
 
         loop = asyncio.get_event_loop()
