@@ -65,7 +65,8 @@
       "Bash(curl -s -o /dev/null -w \"Frontend: %{http_code}\\\\n\" https://cliplib.vercel.app)",
       "Bash(git commit -m 'Add render.yaml with ffmpeg in build command *)",
       "Bash(git commit -m 'Fix ffmpeg on Render using imageio-ffmpeg \\(no root needed\\) *)",
-      "Bash(git commit -m 'Pin Python 3.11 for Render compatibility *)"
+      "Bash(git commit -m 'Pin Python 3.11 for Render compatibility *)",
+      "Bash(git commit -m 'Fix transcription: remove ffmpeg dependency, use native audio formats *)"
     ]
   }
 }

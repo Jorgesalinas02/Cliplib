@@ -2,13 +2,9 @@ import asyncio
 import glob
 import os
 
-import imageio_ffmpeg
 import yt_dlp
 from groq import Groq
 from services.categorization import auto_categorize
-
-# Use bundled ffmpeg binary (works on Render without root)
-FFMPEG_PATH = imageio_ffmpeg.get_ffmpeg_exe()
 
 GROQ_CLIENT = None
 
@@ -25,19 +21,14 @@ async def transcribe_video(video_id: str, url: str, pool):
         await db.execute("UPDATE videos SET status='processing' WHERE id=$1", video_id)
 
     tmp_base = f"/tmp/{video_id}"
-    tmp_audio = f"{tmp_base}.wav"
+    tmp_audio = None
 
     try:
+        # Download audio in native format — no ffmpeg needed
+        # Groq accepts: mp3, mp4, m4a, webm, wav, mpeg, mpga
         ydl_opts = {
-            "format": "bestaudio/best",
+            "format": "bestaudio[ext=m4a]/bestaudio[ext=mp3]/bestaudio/best",
             "outtmpl": f"{tmp_base}.%(ext)s",
-            "postprocessors": [
-                {
-                    "key": "FFmpegExtractAudio",
-                    "preferredcodec": "wav",
-                }
-            ],
-            "ffmpeg_location": FFMPEG_PATH,
             "quiet": True,
             "no_warnings": True,
             "socket_timeout": 30,
@@ -46,18 +37,23 @@ async def transcribe_video(video_id: str, url: str, pool):
         loop = asyncio.get_event_loop()
         await loop.run_in_executor(None, lambda: _download(ydl_opts, url))
 
-        wav_files = glob.glob(f"{tmp_base}*.wav")
-        if not wav_files:
-            raise Exception("Audio download failed — no WAV file produced")
-        tmp_audio = wav_files[0]
+        # Find downloaded file (any audio format)
+        audio_files = [
+            f for ext in ["m4a", "mp3", "webm", "mp4", "wav", "opus", "ogg"]
+            for f in glob.glob(f"{tmp_base}*.{ext}")
+        ]
+        if not audio_files:
+            raise Exception("No se pudo descargar el audio del video.")
+
+        tmp_audio = audio_files[0]
+        ext = os.path.splitext(tmp_audio)[1].lstrip(".")
 
         file_size = os.path.getsize(tmp_audio)
         if file_size > 25 * 1024 * 1024:
-            raise Exception("Este video supera el límite de 10 minutos.")
+            raise Exception("Este video supera el límite de tamaño.")
 
-        transcription = await _transcribe_with_retry(tmp_audio, video_id)
+        transcription = await _transcribe_with_retry(tmp_audio, video_id, ext)
 
-        # Auto-categorize from transcript (non-blocking — failure is OK)
         category = await auto_categorize(transcription.text)
 
         async with pool.acquire() as db:
@@ -93,9 +89,10 @@ def _download(opts: dict, url: str):
         ydl.download([url])
 
 
-async def _transcribe_with_retry(audio_path: str, video_id: str):
+async def _transcribe_with_retry(audio_path: str, video_id: str, ext: str):
     delays = [5, 15, 45]
     last_error = None
+    filename = f"{video_id}.{ext}"
 
     for i, delay in enumerate([0] + delays):
         if delay > 0:
@@ -104,7 +101,7 @@ async def _transcribe_with_retry(audio_path: str, video_id: str):
             client = get_groq_client()
             with open(audio_path, "rb") as f:
                 return client.audio.transcriptions.create(
-                    file=(f"{video_id}.wav", f),
+                    file=(filename, f),
                     model="whisper-large-v3",
                     response_format="verbose_json",
                     temperature=0.0,
