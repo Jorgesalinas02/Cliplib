@@ -24,9 +24,29 @@ async def transcribe_video(video_id: str, url: str, pool):
     tmp_audio = None
 
     try:
-        # Download audio in native format — no ffmpeg needed
-        # Download audio-only stream (no ffmpeg needed)
-        # acodec!=none ensures there's audio, vcodec=none prefers audio-only
+        # 1. Extract metadata (views, likes, description) — no download
+        loop = asyncio.get_event_loop()
+        info = {}
+        try:
+            meta_opts = {"quiet": True, "no_warnings": True, "skip_download": True, "socket_timeout": 30}
+            info = await asyncio.wait_for(
+                loop.run_in_executor(None, lambda: _extract_info(meta_opts, url)),
+                timeout=30
+            ) or {}
+        except Exception:
+            pass  # metadata is optional, don't fail the whole pipeline
+
+        view_count  = info.get("view_count")
+        like_count  = info.get("like_count")
+        description = (info.get("description") or "")[:1000] or None
+
+        async with pool.acquire() as db:
+            await db.execute(
+                "UPDATE videos SET view_count=$1, like_count=$2, description=$3 WHERE id=$4",
+                view_count, like_count, description, video_id
+            )
+
+        # 2. Download audio-only stream (no ffmpeg needed)
         ydl_opts = {
             "format": (
                 "bestaudio[acodec!=none][vcodec=none]"
@@ -105,6 +125,11 @@ async def transcribe_video(video_id: str, url: str, pool):
                 os.remove(f)
             except Exception:
                 pass
+
+
+def _extract_info(opts: dict, url: str) -> dict:
+    with yt_dlp.YoutubeDL(opts) as ydl:
+        return ydl.extract_info(url, download=False) or {}
 
 
 def _download(opts: dict, url: str):

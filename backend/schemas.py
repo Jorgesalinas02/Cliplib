@@ -34,6 +34,9 @@ class VideoResponse(BaseModel):
     category: str | None
     saved: bool
     scripted: bool
+    view_count: int | None
+    like_count: int | None
+    description: str | None
     created_at: datetime
     transcribed_at: datetime | None
 

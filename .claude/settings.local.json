@@ -71,7 +71,8 @@
       "Bash(git commit -m 'Force audio-only stream download to fix '\\\\''no audio track'\\\\'' error *)",
       "Bash(git commit -m 'Handle no-audio videos gracefully with placeholder transcript *)",
       "Bash(git commit -m 'Auto-assign Formato Rápido to no-audio and short-transcript videos *)",
-      "Bash(git commit -m 'Fix keepalive route for Vercel deployment *)"
+      "Bash(git commit -m 'Fix keepalive route for Vercel deployment *)",
+      "Bash(curl -s https://cliplib.vercel.app/api/keepalive)"
     ]
   }
 }

@@ -28,6 +28,9 @@ export interface Video {
   category: string | null
   saved: boolean
   scripted: boolean
+  view_count: number | null
+  like_count: number | null
+  description: string | null
   created_at: string
   transcribed_at: string | null
 }
