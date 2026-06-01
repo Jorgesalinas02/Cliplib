@@ -2,9 +2,13 @@ import asyncio
 import glob
 import os
 
+import imageio_ffmpeg
 import yt_dlp
 from groq import Groq
 from services.categorization import auto_categorize
+
+# Use bundled ffmpeg binary (works on Render without root)
+FFMPEG_PATH = imageio_ffmpeg.get_ffmpeg_exe()
 
 GROQ_CLIENT = None
 
@@ -33,6 +37,7 @@ async def transcribe_video(video_id: str, url: str, pool):
                     "preferredcodec": "wav",
                 }
             ],
+            "ffmpeg_location": FFMPEG_PATH,
             "quiet": True,
             "no_warnings": True,
             "socket_timeout": 30,

@@ -63,7 +63,8 @@
       "Bash(curl -s \"http://localhost:8000/videos?limit=5\")",
       "Bash(git commit -m 'Auto-assign '\\\\''Formato Rápido'\\\\'' for transcripts under 100 words *)",
       "Bash(curl -s -o /dev/null -w \"Frontend: %{http_code}\\\\n\" https://cliplib.vercel.app)",
-      "Bash(git commit -m 'Add render.yaml with ffmpeg in build command *)"
+      "Bash(git commit -m 'Add render.yaml with ffmpeg in build command *)",
+      "Bash(git commit -m 'Fix ffmpeg on Render using imageio-ffmpeg \\(no root needed\\) *)"
     ]
   }
 }
