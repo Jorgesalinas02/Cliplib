@@ -1,15 +1,13 @@
-import { NextResponse } from 'next/server'
+export const dynamic = 'force-dynamic'
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'https://cliplib.onrender.com'
 
 export async function GET() {
   try {
-    const res = await fetch(`${BACKEND_URL}/health`, {
-      next: { revalidate: 0 },
-    })
+    const res = await fetch(`${BACKEND_URL}/health`, { cache: 'no-store' })
     const data = await res.json()
-    return NextResponse.json({ ok: true, backend: data, ts: new Date().toISOString() })
+    return Response.json({ ok: true, backend: data, ts: new Date().toISOString() })
   } catch (e) {
-    return NextResponse.json({ ok: false, error: String(e) }, { status: 503 })
+    return Response.json({ ok: false, error: String(e) }, { status: 503 })
   }
 }
