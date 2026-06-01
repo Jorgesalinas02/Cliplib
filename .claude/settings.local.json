@@ -61,7 +61,9 @@
       "Bash(git commit -m 'Fix title wrapping to 2 lines on video cards *)",
       "Bash(git commit -m 'Add '\\\\''Formato Rápido'\\\\'' category *)",
       "Bash(curl -s \"http://localhost:8000/videos?limit=5\")",
-      "Bash(git commit -m 'Auto-assign '\\\\''Formato Rápido'\\\\'' for transcripts under 100 words *)"
+      "Bash(git commit -m 'Auto-assign '\\\\''Formato Rápido'\\\\'' for transcripts under 100 words *)",
+      "Bash(curl -s -o /dev/null -w \"Frontend: %{http_code}\\\\n\" https://cliplib.vercel.app)",
+      "Bash(git commit -m 'Add render.yaml with ffmpeg in build command *)"
     ]
   }
 }
