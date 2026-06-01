@@ -35,18 +35,20 @@ async def transcribe_video(video_id: str, url: str, pool):
         }
 
         loop = asyncio.get_event_loop()
-        await loop.run_in_executor(None, lambda: _download(ydl_opts, url))
+        await asyncio.wait_for(
+            loop.run_in_executor(None, lambda: _download(ydl_opts, url)),
+            timeout=120
+        )
 
-        # Find downloaded file (any audio format)
-        audio_files = [
-            f for ext in ["m4a", "mp3", "webm", "mp4", "wav", "opus", "ogg"]
-            for f in glob.glob(f"{tmp_base}*.{ext}")
-        ]
+        # Find ANY file downloaded with this video_id prefix
+        all_files = glob.glob(f"{tmp_base}*")
+        audio_files = [f for f in all_files if not f.endswith(".part") and os.path.isfile(f)]
+
         if not audio_files:
             raise Exception("No se pudo descargar el audio del video.")
 
         tmp_audio = audio_files[0]
-        ext = os.path.splitext(tmp_audio)[1].lstrip(".")
+        ext = os.path.splitext(tmp_audio)[1].lstrip(".") or "mp4"
 
         file_size = os.path.getsize(tmp_audio)
         if file_size > 25 * 1024 * 1024:
